@@ -9,6 +9,24 @@
 </head>
 <body>
     <div class="container">
+        {% if user.is_authenticated %}
+            <h1>
+                안녕, {{ user.username }}
+                <a href="{% url 'accounts:edit' %}">회원 수정</a>
+                <a href="{% url 'accounts:logout' %}">로그아웃</a>
+                <form action="{% url 'accounts:delete' %}" method="POST" style="display: inline" onsubmit="return confirm('R U SURE?');">
+                    {% csrf_token %}
+                    <input type="submit" value="탈퇴"/>
+                </form>
+            </h1>
+        <hr>
+        {% else %}
+            <h1>
+                <a href="{% url 'accounts:login' %}">로그인</a>
+                <a href="{% url 'accounts:signup' %}">회원가입</a>
+            </h1>
+        {% endif %}
+        <hr>
         {% block body %}
         {% endblock %}
     </div>
