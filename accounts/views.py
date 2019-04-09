@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth import update_session_auth_hash    # 비밀번호 변경 후 로그인 상태 유지
 from .forms import UserCustomChangeForm
 
 # Create your views here.
@@ -56,3 +57,15 @@ def edit(request):
         form = UserCustomChangeForm(instance=request.user)
     context = {'form': form,}
     return render(request, 'accounts/edit.html', context)
+    
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)   # 인자 순서 유의
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)     # 비밀번호 변경 후에도 로그인 상태 유지
+            return redirect('boards:index')
+    else:
+        form = PasswordChangeForm(request.user)
+    context = {'form': form,}
+    return render(request, 'accounts/change_password.html', context)
