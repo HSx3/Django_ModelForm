@@ -1,13 +1,19 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+# import hashlib
 from .models import Board
 from .forms import BoardForm
 
 # Create your views here.
 def index(request):
+    # if request.user.is_authenticated:    # 로그인 상태 체크
+    #     gravatar_url = hashlib.md5(request.user.email.strip().lower().encode('utf-8')).hexdigest()
+    # else:
+    #     gravatar_url = None
     boards = Board.objects.order_by('-pk')
     context = {
-        'boards': boards
+        'boards': boards,
+        # 'gravatar_url': gravatar_url,
     }
     return render(request, 'boards/index.html', context)
 
