@@ -1,0 +1,115 @@
+{% extends 'accounts/base.html' %}
+{% load gravatar %}
+{% block body %}
+<body style="background-color: #edeff2">
+</body>
+
+<nav class="navbar fixed-top navbar-light navbar-expand-md bg-faded d-flex justify-content-around bg-white">
+<!--<nav class="navbar navbar-light fixed-top navbar-expand-md bg-faded d-flex justify-content-around">-->
+    <div class="container">
+        <i class="fab fa-instagram"></i>
+        <a href="/" class="navbar-brand d-flex w-50 mr-auto"> Instagram</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsingNavbar3">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse w-100" id="collapsingNavbar3">
+            <ul class="navbar-nav w-100 d-flex justify-content-around">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">검색</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav ml-auto w-100 justify-content-end">
+                <li class="nav-item">
+                    <!--<span class="badge badge-primary">Primary</span>-->
+                    <a class="nav-link" href="#"><span class="badge badge-primary">로그인</span></a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link text-primary">가입하기</a>
+                    <!--<a class="nav-link primary" href="#">Right</a>-->
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<hr>
+<img src="https://s.gravatar.com/avatar/{{ user_info.email|makemd5 }}?s=150" alt="profile" class="rounded-circle"/>
+<h2>{{ user_info.username }}의 프로필</h2>
+{% if user == user_info %}
+<div>
+    <a href="{% url 'accounts:edit' %}">[내 정보 수정]</a>
+    <a href="{% url 'accounts:change_password' %}">[비밀번호 변경]</a>
+    <form action="{% url 'accounts:delete' %}" method="POST" style="display: inline" onsubmit="return confirm('R U SURE??');" >
+       {% csrf_token %}
+       <input type="submit" value="회원탈퇴"/>
+    </form>
+</div>
+{% endif %}
+<hr>
+
+
+<div class="container">
+    <div class="row">
+        {% for board in user_info.board_set.all %}
+        <div class="card  col-4" style="width: 18rem;">
+          <img src="https://s.gravatar.com/avatar/{{ user_info.email|makemd5 }}?s=150" class="card-img-top" alt="dog">
+          <div class="card-body">
+            <h5 class="card-title">{{ board.title }}</h5>
+            <p class="card-text">{{ board.content }}</p>
+            <a href="{% url 'boards:detail' board.pk %}" class="btn btn-primary">게시글로 가기</a>
+          </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<hr>
+<h4>내가 쓴 댓글</h4>
+<div class="row">
+    
+    {% for comment in user_info.comment_set.all %}
+    <div class="col-12">
+        <a href="{% url 'boards:detail' comment.board.pk %}">{{ comment.board }}글</a>의 댓글
+        <p>{{ comment.content }}</p>
+        <hr>
+    </div>
+    {% endfor %}
+    
+</div>
+
+
+
+
+<!--<h3>{{ user_info.username }}가 작성한 게시글</h3>-->
+<!--{# for board in user_info.board_set.all #}-->
+<!--<p>제목 : <a href="{# url 'boards:detail' board.id #}">{{ board.title }}</a></p>-->
+<!--<p>내용 : {{ board.content }}</p>-->
+<!--<p>달린 댓글 수 : {{ board.comment_set.count }}</p>-->
+<!--<hr>-->
+<!--{# endfor #}-->
+<!--<hr>-->
+<!--<h3>{{ user_info.username }}가 작성한 댓글</h2>-->
+<!--{# for comment in user_info.comment_set.all #}-->
+<!--<p><a href="{# url 'boards:detail' comment.board.id #}">{{ comment.board }}글</a>의 댓글 / {{ comment.content }}</p>-->
+<!--{# endfor #}-->
+
+<!--<footer class="page-footer font-small indigo fixed-bottom">-->
+<!--    <div class="container">-->
+<!--        <a><i class="fab fa-instagram fa-4x"></i>instagram에 로그인</a>-->
+<!--    </div>-->
+    <!--<div class="footer-copyright text-center py-3">© 2018 Copyright:-->
+<!--      <a href="https://mdbootstrap.com/education/bootstrap/"> MDBootstrap.com</a>-->
+<!--    </div>-->
+<!--</footer>-->
+
+
+
+<div class="card-footer fixed-bottom" style="height: 112px; opacity: 0.4;">
+    <div class="container">
+        <a><i class="fab fa-instagram fa-4x"></i>instagram에 로그인</a>
+        <div>로그인하여 친구들의 사진과 동영상을 확인하고 회원님이 좋아할 만한 계정을 찾아보세요.</div>
+    </div>
+</div>
+
+
+
+{% endblock %}
